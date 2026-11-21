@@ -35,7 +35,7 @@ spring:
             - id: motherboard-service
               uri: lb://msvc_motherboard-service
               predicates:
-                - Path=/api/v1/placas_madre/**
+                - Path=/api/v1/placas-madre/**
 
             - id: ram-service
               uri: lb://msvc_ram-service
@@ -45,7 +45,7 @@ spring:
             - id: power-supply-service
               uri: lb://msvc_power-supply-service
               predicates:
-                - Path=/api/v1/fuentes_poder/**
+                - Path=/api/v1/fuentes-poder/**
 
             - id: build-service
               uri: lb://msvc_build-service

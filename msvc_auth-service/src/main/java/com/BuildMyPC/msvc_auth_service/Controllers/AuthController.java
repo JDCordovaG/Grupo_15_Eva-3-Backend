@@ -2,6 +2,8 @@ package com.BuildMyPC.msvc_auth_service.Controllers;
 
 import com.BuildMyPC.msvc_auth_service.Models.Auth;
 import com.BuildMyPC.msvc_auth_service.Models.Dtos.AuthDTO;
+import com.BuildMyPC.msvc_auth_service.Models.Dtos.LoginDTO;
+import com.BuildMyPC.msvc_auth_service.Models.Dtos.LoginResponseDTO;
 import com.BuildMyPC.msvc_auth_service.Services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,11 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<Auth> crear(@Valid @RequestBody AuthDTO dto) {
         return new ResponseEntity<>(service.crearAuth(dto), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> iniciarSesion(@Valid @RequestBody LoginDTO dto) {
+        return ResponseEntity.ok(LoginResponseDTO.desde(service.autenticar(dto.getEmail(), dto.getPassword())));
     }
 
     @GetMapping

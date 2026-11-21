@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "power-supply-service", url = "localhost:8084")
 public interface PowerSupplyClient {
-    @GetMapping("/api/v1/fuentes_poder/{id}")
+    @GetMapping("/api/v1/fuentes-poder/{id}")
     PowerSupplyDTO findById(@PathVariable("id") Long id);
 }

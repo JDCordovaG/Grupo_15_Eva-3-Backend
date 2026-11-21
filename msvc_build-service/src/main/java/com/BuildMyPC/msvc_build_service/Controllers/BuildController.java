@@ -37,6 +37,12 @@ public class BuildController {
         return ResponseEntity.ok(service.listarTodas());
     }
 
+    @GetMapping("/usuario/{usuarioId}")
+    @Operation(summary = "Listar Builds de un usuario")
+    public ResponseEntity<List<Build>> listarPorUsuario(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(service.listarPorUsuario(usuarioId));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Buscar Build por ID")
     public ResponseEntity<Build> buscarPorId(@PathVariable Long id) {
@@ -47,6 +53,12 @@ public class BuildController {
     @Operation(summary = "Actualizar componentes de una Build", description = "Actualiza los componentes y reinicia el estado a BORRADOR")
     public ResponseEntity<Build> actualizar(@PathVariable Long id, @Valid @RequestBody BuildDTO dto) {
         return ResponseEntity.ok(service.actualizarBuild(id, dto));
+    }
+
+    @PatchMapping("/{id}/archivar")
+    @Operation(summary = "Archivar una Build")
+    public ResponseEntity<Build> archivar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.archivarBuild(id));
     }
 
     @DeleteMapping("/{id}")

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDateTime;
 
 @Service
 public class BuildService {
@@ -45,6 +46,10 @@ public class BuildService {
         build.setMotherboardId(dto.getMotherboardId());
         build.setRamId(dto.getRamId());
         build.setFuenteId(dto.getFuenteId());
+        build.setEstado("BORRADOR");
+        LocalDateTime ahora = LocalDateTime.now();
+        build.setFechaCreacion(ahora);
+        build.setFechaActualizacion(ahora);
 
         Build guardada = repository.save(build);
 
@@ -60,6 +65,7 @@ public class BuildService {
 
             boolean esCompatible = (boolean) resultado.getOrDefault("compatible", false);
             guardada.setEstado(esCompatible ? "VALIDADA" : "INCOMPATIBLE");
+            guardada.setFechaActualizacion(LocalDateTime.now());
             guardada = repository.save(guardada);
 
             log.info("Resultado de compatibilidad procesado. Nuevo estado: {}", guardada.getEstado());
@@ -73,6 +79,11 @@ public class BuildService {
     @Transactional(readOnly = true)
     public List<Build> listarTodas() {
         return repository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Build> listarPorUsuario(Long usuarioId) {
+        return repository.findByUsuarioId(usuarioId);
     }
 
     @Transactional(readOnly = true)
@@ -92,6 +103,14 @@ public class BuildService {
         build.setFuenteId(dto.getFuenteId());
         build.setEstado("BORRADOR"); // Al modificarse, pierde su validación anterior.
 
+        return repository.save(build);
+    }
+
+    @Transactional
+    public Build archivarBuild(Long id) {
+        Build build = buscarPorId(id);
+        build.setEstado("ARCHIVADA");
+        build.setFechaActualizacion(LocalDateTime.now());
         return repository.save(build);
     }
 

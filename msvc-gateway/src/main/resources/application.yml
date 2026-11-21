@@ -8,62 +8,62 @@ spring:
         webmvc:
           routes:
             - id: auth-service
-              uri: lb://msvc_auth-service
+              uri: lb://msvc-auth-service
               predicates:
                 - Path=/api/v1/auths/**
 
             - id: user-service
-              uri: lb://msvc_user-service
+              uri: lb://msvc-user-service
               predicates:
                 - Path=/api/v1/users/**
 
             - id: component-service
-              uri: lb://msvc_component-service
+              uri: lb://msvc-component-service
               predicates:
                 - Path=/api/v1/components/**
 
             - id: cpu-service
-              uri: lb://msvc_cpu-service
+              uri: lb://msvc-cpu-service
               predicates:
                 - Path=/api/v1/cpus/**
 
             - id: gpu-service
-              uri: lb://msvc_gpu-service
+              uri: lb://msvc-gpu-service
               predicates:
                 - Path=/api/v1/gpus/**
 
             - id: motherboard-service
-              uri: lb://msvc_motherboard-service
+              uri: lb://msvc-motherboard-service
               predicates:
                 - Path=/api/v1/placas-madre/**
 
             - id: ram-service
-              uri: lb://msvc_ram-service
+              uri: lb://msvc-ram-service
               predicates:
                 - Path=/api/v1/rams/**
 
             - id: power-supply-service
-              uri: lb://msvc_power-supply-service
+              uri: lb://msvc-power-supply-service
               predicates:
                 - Path=/api/v1/fuentes-poder/**
 
             - id: build-service
-              uri: lb://msvc_build-service
+              uri: lb://msvc-build-service
               predicates:
                 - Path=/api/v1/builds/**
 
             - id: compatibility-service
-              uri: lb://msvc_compatibility-service
+              uri: lb://msvc-compatibility-service
               predicates:
                 - Path=/api/v1/compatibilities/**
 
             - id: benchmark-service
-              uri: lb://msvc_benchmark-service
+              uri: lb://msvc-benchmark-service
               predicates:
                 - Path=/api/v1/benchmarks/**
 
             - id: quotation-service
-              uri: lb://msvc_quotation-service
+              uri: lb://msvc-quotation-service
               predicates:
                 - Path=/api/v1/quotations/**
 

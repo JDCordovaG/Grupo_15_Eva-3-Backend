@@ -1,6 +1,7 @@
 package com.BuildMyPC.msvc_auth_service.Services;
 
 import com.BuildMyPC.msvc_auth_service.Exceptions.AuthException;
+import com.BuildMyPC.msvc_auth_service.Exceptions.CredencialesInvalidasException;
 import com.BuildMyPC.msvc_auth_service.Models.Auth;
 import com.BuildMyPC.msvc_auth_service.Models.Dtos.AuthDTO;
 import com.BuildMyPC.msvc_auth_service.Repositories.AuthRepository;
@@ -34,6 +35,7 @@ public class AuthService {
         auth.setEmail(dto.getEmail());
         auth.setPasswordHash(dto.getPasswordHash());
         auth.setRol(dto.getRol());
+        auth.setEstado("ACTIVO");
 
         Auth guardada = repository.save(auth);
         log.info("Auth guardada exitosamente con ID: {}", guardada.getId());
@@ -55,6 +57,16 @@ public class AuthService {
     public Auth buscarPorEmail(String email) {
         return repository.findByEmail(email)
                 .orElseThrow(() -> new AuthException("Auth no encontrada con email: " + email));
+    }
+
+    @Transactional(readOnly = true)
+    public Auth autenticar(String email, String password) {
+        Auth auth = repository.findByEmail(email)
+                .orElseThrow(CredencialesInvalidasException::new);
+        if (!"ACTIVO".equals(auth.getEstado()) || !auth.getPasswordHash().equals(password)) {
+            throw new CredencialesInvalidasException();
+        }
+        return auth;
     }
 
     @Transactional

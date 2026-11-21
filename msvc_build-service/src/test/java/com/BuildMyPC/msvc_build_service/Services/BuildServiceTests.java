@@ -1,7 +1,7 @@
 package com.BuildMyPC.msvc_build_service.Services;
 
+import com.BuildMyPC.msvc_build_service.Clients.AuthClient;
 import com.BuildMyPC.msvc_build_service.Clients.CompatibilityClient;
-import com.BuildMyPC.msvc_build_service.Clients.UserClient;
 import com.BuildMyPC.msvc_build_service.Exceptions.BuildException;
 import com.BuildMyPC.msvc_build_service.Models.Build;
 import com.BuildMyPC.msvc_build_service.Models.Dtos.BuildDTO;
@@ -32,7 +32,7 @@ public class BuildServiceTests {
     private BuildRepository repository;
 
     @Mock
-    private UserClient userClient;
+    private AuthClient authClient;
 
     @Mock
     private CompatibilityClient compatibilityClient;
@@ -81,7 +81,7 @@ public class BuildServiceTests {
         Map<String, Object> compatResponse = new HashMap<>();
         compatResponse.put("compatible", true);
 
-        when(userClient.obtenerUsuario(1L)).thenReturn(new Object());
+        when(authClient.obtenerCuenta(1L)).thenReturn(new Object());
         when(repository.save(any(Build.class))).thenAnswer(inv -> {
             Build saved = inv.getArgument(0);
             saved.setId(100L);
@@ -95,7 +95,7 @@ public class BuildServiceTests {
         assertThat(result.getId()).isEqualTo(100L);
         assertThat(result.getEstado()).isEqualTo("VALIDADA");
 
-        verify(userClient, times(1)).obtenerUsuario(1L);
+        verify(authClient, times(1)).obtenerCuenta(1L);
         verify(compatibilityClient, times(1)).validarBuild(anyMap());
         verify(repository, times(2)).save(any(Build.class));
     }
@@ -103,7 +103,7 @@ public class BuildServiceTests {
     @Test
     @DisplayName("Debe lanzar excepción si el usuario no existe")
     public void shouldThrowExceptionWhenUserDoesNotExist() {
-        doThrow(new RuntimeException("User not found")).when(userClient).obtenerUsuario(999L);
+        doThrow(new RuntimeException("User not found")).when(authClient).obtenerCuenta(999L);
 
         BuildDTO dtoInvalido = new BuildDTO();
         dtoInvalido.setUsuarioId(999L);
@@ -180,7 +180,7 @@ public class BuildServiceTests {
 
         when(repository.findById(id)).thenReturn(Optional.of(borrador));
 
-        buildService.eliminarBuildBorrador(id);
+        buildService.eliminarBuild(id);
 
         verify(repository, times(1)).delete(borrador);
     }
@@ -191,7 +191,7 @@ public class BuildServiceTests {
         Long id = 100L;
         when(repository.findById(id)).thenReturn(Optional.of(buildPrueba));
 
-        assertThatThrownBy(() -> buildService.eliminarBuildBorrador(id))
+        assertThatThrownBy(() -> buildService.eliminarBuild(id))
                 .isInstanceOf(BuildException.class)
                 .hasMessageContaining("Solo se pueden eliminar o archivar builds en estado BORRADOR");
     }

@@ -61,11 +61,17 @@ public class BuildController {
         return ResponseEntity.ok(service.archivarBuild(id));
     }
 
+    @PatchMapping("/{id}/desarchivar")
+    @Operation(summary = "Restaurar una Build archivada")
+    public ResponseEntity<Build> desarchivar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.desarchivarBuild(id));
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar Build en borrador", description = "Elimina físicamente la build solo si se encuentra en estado BORRADOR")
     @ApiResponse(responseCode = "204", description = "Build eliminada")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        service.eliminarBuildBorrador(id);
+        service.eliminarBuild(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -1,7 +1,7 @@
 package com.BuildMyPC.msvc_build_service.Services;
 
 import com.BuildMyPC.msvc_build_service.Clients.CompatibilityClient;
-import com.BuildMyPC.msvc_build_service.Clients.UserClient;
+import com.BuildMyPC.msvc_build_service.Clients.AuthClient;
 import com.BuildMyPC.msvc_build_service.Exceptions.BuildException;
 import com.BuildMyPC.msvc_build_service.Models.Build;
 import com.BuildMyPC.msvc_build_service.Models.Dtos.BuildDTO;
@@ -20,12 +20,12 @@ public class BuildService {
 
     private static final Logger log = LoggerFactory.getLogger(BuildService.class);
     private final BuildRepository repository;
-    private final UserClient userClient;
+    private final AuthClient authClient;
     private final CompatibilityClient compatibilityClient;
 
-    public BuildService(BuildRepository repository, UserClient userClient, CompatibilityClient compatibilityClient) {
+    public BuildService(BuildRepository repository, AuthClient authClient, CompatibilityClient compatibilityClient) {
         this.repository = repository;
-        this.userClient = userClient;
+        this.authClient = authClient;
         this.compatibilityClient = compatibilityClient;
     }
 
@@ -34,9 +34,10 @@ public class BuildService {
         log.info("Iniciando creación de Build con id de usuario: {}", dto.getUsuarioId());
 
         try {
-            userClient.obtenerUsuario(dto.getUsuarioId());
+            authClient.obtenerCuenta(dto.getUsuarioId());
         } catch (Exception e) {
-            throw new BuildException("El usuario no existe o el user-service no está disponible");
+            log.error("No se pudo validar la cuenta {} en auth-service", dto.getUsuarioId(), e);
+            throw new BuildException("La cuenta no existe o auth-service no está disponible");
         }
 
         Build build = new Build();
@@ -115,14 +116,20 @@ public class BuildService {
     }
 
     @Transactional
-    public void eliminarBuildBorrador(Long id) {
+    public Build desarchivarBuild(Long id) {
+        Build build = buscarPorId(id);
+        if (!"ARCHIVADA".equals(build.getEstado())) {
+            throw new BuildException("Solo se pueden desarchivar builds que estén archivadas.");
+        }
+        build.setEstado("BORRADOR");
+        build.setFechaActualizacion(LocalDateTime.now());
+        return repository.save(build);
+    }
+
+    @Transactional
+    public void eliminarBuild(Long id) {
         log.info("Intentando eliminar Build con ID: {}", id);
         Build build = buscarPorId(id);
-
-        if (!"BORRADOR".equals(build.getEstado())) {
-            throw new BuildException("Solo se pueden eliminar o archivar builds en estado BORRADOR.");
-        }
-
         repository.delete(build);
         log.info("Build eliminada exitosamente");
     }

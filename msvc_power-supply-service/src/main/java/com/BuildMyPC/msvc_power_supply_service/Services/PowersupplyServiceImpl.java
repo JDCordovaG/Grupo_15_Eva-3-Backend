@@ -95,6 +95,12 @@ public class PowersupplyServiceImpl implements PowersupplyService {
         log.info("Fuente de Poder ID: {} marcada como INACTIVA correctamente", id);
     }
 
+    @Override
+    @Transactional
+    public void eliminarPorComponenteId(Long componenteId) {
+        repository.deleteByComponenteId(componenteId);
+    }
+
     private Powersupply mapToEntity(PowersupplyDTO dto) {
         Powersupply entity = new Powersupply();
         entity.setComponenteId(dto.getComponenteId());

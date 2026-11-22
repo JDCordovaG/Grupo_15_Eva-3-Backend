@@ -12,4 +12,5 @@ public interface CpuService {
     List<CpuDTO> listarPorComponentes(List<Long> componenteIds);
     CpuDTO actualizar(Long id, CpuDTO cpuDTO);
     void desactivar(Long id);
+    void eliminarPorComponenteId(Long componenteId);
 }

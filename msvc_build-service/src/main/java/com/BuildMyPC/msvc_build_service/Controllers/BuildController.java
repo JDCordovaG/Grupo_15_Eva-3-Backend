@@ -2,6 +2,7 @@ package com.BuildMyPC.msvc_build_service.Controllers;
 
 import com.BuildMyPC.msvc_build_service.Models.Build;
 import com.BuildMyPC.msvc_build_service.Models.Dtos.BuildDTO;
+import com.BuildMyPC.msvc_build_service.Models.Dtos.ObservacionTecnicaDTO;
 import com.BuildMyPC.msvc_build_service.Services.BuildService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,6 +42,30 @@ public class BuildController {
     @Operation(summary = "Listar Builds de un usuario")
     public ResponseEntity<List<Build>> listarPorUsuario(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(service.listarPorUsuario(usuarioId));
+    }
+
+    @GetMapping("/pendientes-revision")
+    @Operation(summary = "Listar builds pendientes de revisión técnica")
+    public ResponseEntity<List<Build>> listarPendientesRevision() {
+        return ResponseEntity.ok(service.listarPendientesRevision());
+    }
+
+    @GetMapping("/revisadas")
+    @Operation(summary = "Listar builds con revisiÃ³n tÃ©cnica completada")
+    public ResponseEntity<List<Build>> listarRevisadas() {
+        return ResponseEntity.ok(service.listarRevisadas());
+    }
+
+    @PatchMapping("/{id}/observaciones-tecnicas")
+    @Operation(summary = "Registrar observación y cerrar revisión técnica")
+    public ResponseEntity<Build> guardarObservacionTecnica(@PathVariable Long id, @Valid @RequestBody ObservacionTecnicaDTO dto) {
+        return ResponseEntity.ok(service.guardarObservacionTecnica(id, dto.getObservacionesTecnicas()));
+    }
+
+    @DeleteMapping("/{id}/observaciones-tecnicas")
+    @Operation(summary = "Eliminar observaciÃ³n y reabrir revisiÃ³n tÃ©cnica")
+    public ResponseEntity<Build> eliminarObservacionTecnica(@PathVariable Long id) {
+        return ResponseEntity.ok(service.eliminarObservacionTecnica(id));
     }
 
     @GetMapping("/{id}")

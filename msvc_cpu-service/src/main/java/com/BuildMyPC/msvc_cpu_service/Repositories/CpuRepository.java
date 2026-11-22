@@ -7,6 +7,7 @@ import java.util.List;
 
 @Repository
 public interface CpuRepository extends JpaRepository<Cpu, Long> {
+    void deleteByComponenteId(Long componenteId);
     List<Cpu> findBySocketIgnoreCaseAndActivoTrue(String socket);
     List<Cpu> findByGeneracionIgnoreCaseAndActivoTrue(String generacion);
     List<Cpu> findByComponenteIdInAndActivoTrue(List<Long> componenteIds);

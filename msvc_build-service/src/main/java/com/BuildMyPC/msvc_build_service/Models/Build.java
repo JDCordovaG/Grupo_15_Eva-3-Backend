@@ -37,6 +37,12 @@ public class Build {
     @Column(nullable = false)
     private String estado;
 
+    @Column(name = "estado_revision")
+    private String estadoRevision = "PENDIENTE";
+
+    @Column(name = "observaciones_tecnicas", length = 2000)
+    private String observacionesTecnicas;
+
     @Column(nullable = false, name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion;
 
@@ -45,4 +51,9 @@ public class Build {
 
     @Embedded
     private Audit audit = new Audit();
+
+    @PrePersist
+    public void inicializarRevision() {
+        if (estadoRevision == null) estadoRevision = "PENDIENTE";
+    }
 }

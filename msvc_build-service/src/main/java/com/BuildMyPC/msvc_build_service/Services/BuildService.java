@@ -88,6 +88,38 @@ public class BuildService {
     }
 
     @Transactional(readOnly = true)
+    public List<Build> listarPendientesRevision() {
+        return repository.findByEstadoRevisionIsNullOrEstadoRevision("PENDIENTE").stream()
+                .filter(build -> !"ARCHIVADA".equals(build.getEstado()))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Build> listarRevisadas() {
+        return repository.findByEstadoRevision("REVISADA").stream()
+                .filter(build -> !"ARCHIVADA".equals(build.getEstado()))
+                .toList();
+    }
+
+    @Transactional
+    public Build guardarObservacionTecnica(Long id, String observaciones) {
+        Build build = buscarPorId(id);
+        build.setObservacionesTecnicas(observaciones.trim());
+        build.setEstadoRevision("REVISADA");
+        build.setFechaActualizacion(LocalDateTime.now());
+        return repository.save(build);
+    }
+
+    @Transactional
+    public Build eliminarObservacionTecnica(Long id) {
+        Build build = buscarPorId(id);
+        build.setObservacionesTecnicas(null);
+        build.setEstadoRevision("PENDIENTE");
+        build.setFechaActualizacion(LocalDateTime.now());
+        return repository.save(build);
+    }
+
+    @Transactional(readOnly = true)
     public Build buscarPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new BuildException("Build no encontrada con ID: " + id));
@@ -103,6 +135,9 @@ public class BuildService {
         build.setRamId(dto.getRamId());
         build.setFuenteId(dto.getFuenteId());
         build.setEstado("BORRADOR"); // Al modificarse, pierde su validación anterior.
+        build.setEstadoRevision("PENDIENTE");
+        build.setObservacionesTecnicas(null);
+        build.setFechaActualizacion(LocalDateTime.now());
 
         return repository.save(build);
     }

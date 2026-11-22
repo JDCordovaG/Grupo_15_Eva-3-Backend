@@ -10,4 +10,5 @@ public interface GpuService {
     List<GpuDTO> buscarPorFabricante(String fabricante);
     GpuDTO actualizarGpu(Long id, GpuDTO dto);
     void desactivarGpu(Long id);
+    void eliminarPorComponenteId(Long componenteId);
 }

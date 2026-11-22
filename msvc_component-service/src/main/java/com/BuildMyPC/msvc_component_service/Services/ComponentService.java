@@ -83,4 +83,20 @@ public class ComponentService {
         log.info("Componente marcado como DESCONTINUADO exitosamente");
         return actualizada;
     }
+
+    @Transactional
+    public Component activarComponent(Long id) {
+        Component component = buscarPorId(id);
+        component.setEstado("ACTIVO");
+        return repository.save(component);
+    }
+
+    @Transactional
+    public void eliminarComponent(Long id) {
+        Component component = buscarPorId(id);
+        if (!"DESCONTINUADO".equals(component.getEstado())) {
+            throw new ComponentException("Solo se pueden eliminar componentes descontinuados.");
+        }
+        repository.delete(component);
+    }
 }

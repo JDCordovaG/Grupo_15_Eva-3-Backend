@@ -97,6 +97,12 @@ public class MotherboardServiceImpl implements MotherboardService {
         log.info("Placa madre ID: {} marcada como INACTIVA", id);
     }
 
+    @Override
+    @Transactional
+    public void eliminarPorComponenteId(Long componenteId) {
+        repository.deleteByComponenteId(componenteId);
+    }
+
     private Motherboard mapToEntity(MotherboardDTO dto) {
         Motherboard entity = new Motherboard();
         entity.setComponenteId(dto.getComponenteId());

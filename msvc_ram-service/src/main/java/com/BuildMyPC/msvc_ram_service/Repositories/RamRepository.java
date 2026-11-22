@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface RamRepository extends JpaRepository<Ram, Long> {
+    void deleteByComponenteId(Long componenteId);
     List<Ram> findByComponenteId(Long componenteId);
 
 }

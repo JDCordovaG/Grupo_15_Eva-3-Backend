@@ -125,6 +125,12 @@ public class CpuServiceImpl implements CpuService {
         log.info("El procesador ID: {} ha sido marcado correctamente como INACTIVO/DESCONTINUADO", id);
     }
 
+    @Override
+    @Transactional
+    public void eliminarPorComponenteId(Long componenteId) {
+        cpuRepository.deleteByComponenteId(componenteId);
+    }
+
     private Cpu modelToEntity(CpuDTO dto) {
         Cpu entity = new Cpu();
         entity.setId(dto.getId());

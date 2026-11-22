@@ -62,4 +62,10 @@ public class CpuController {
         cpuService.desactivar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/componente/{componenteId}")
+    public ResponseEntity<Void> eliminarPorComponente(@PathVariable Long componenteId) {
+        cpuService.eliminarPorComponenteId(componenteId);
+        return ResponseEntity.noContent().build();
+    }
 }

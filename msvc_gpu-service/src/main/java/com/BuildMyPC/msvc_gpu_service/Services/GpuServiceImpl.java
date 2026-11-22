@@ -98,6 +98,12 @@ public class GpuServiceImpl implements GpuService {
         log.info("GPU ID: {} desactivada correctamente del catálogo comercial", id);
     }
 
+    @Override
+    @Transactional
+    public void eliminarPorComponenteId(Long componenteId) {
+        repository.deleteByComponenteId(componenteId);
+    }
+
     private Gpu mapToEntity(GpuDTO dto) {
         Gpu gpu = new Gpu();
         gpu.setComponenteId(dto.getComponenteId());

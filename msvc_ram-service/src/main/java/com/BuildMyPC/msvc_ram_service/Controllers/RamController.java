@@ -51,4 +51,10 @@ public class RamController {
     public ResponseEntity<Ram> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
+
+    @DeleteMapping("/componente/{componenteId}")
+    public ResponseEntity<Void> eliminarPorComponente(@PathVariable Long componenteId) {
+        service.eliminarPorComponenteId(componenteId);
+        return ResponseEntity.noContent().build();
+    }
 }

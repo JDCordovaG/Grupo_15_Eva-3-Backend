@@ -45,7 +45,6 @@ public class ComponentServiceTests {
         this.componentDTOPrueba.setModelo("Ryzen 7 5800X");
         this.componentDTOPrueba.setPrecioBase(450);
         this.componentDTOPrueba.setDescripcion("Procesador 8 núcleos alto rendimiento");
-        this.componentDTOPrueba.setFechaLanzamiento(LocalDate.of(2020, 11, 5));
 
         this.componentPrueba = new Component();
         this.componentPrueba.setId(1L);

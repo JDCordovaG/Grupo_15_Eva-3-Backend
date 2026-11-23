@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Map;
 
-@FeignClient(name = "msvc-compatibility", url = "localhost:8088/api/v1/compatibility")
+@FeignClient(name = "msvc-compatibility", url = "http://localhost:8088")
 public interface CompatibilityClient {
-    @GetMapping("/build/{buildId}")
+    @GetMapping("/api/v1/compatibilities/build/{buildId}")
     Map<String, Object> obtenerEstadoCompatibilidad(@PathVariable("buildId") Long buildId);
 }

@@ -10,4 +10,5 @@ public interface PowersupplyService {
     List<PowersupplyDTO> buscarPorCertificacion(String certificacion);
     PowersupplyDTO actualizarFuentePoder(Long id, PowersupplyDTO dto);
     void desactivarFuentePoder(Long id);
+    void eliminarPorComponenteId(Long componenteId);
 }

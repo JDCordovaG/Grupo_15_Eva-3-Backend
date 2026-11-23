@@ -8,4 +8,5 @@ public interface RamService {
     Ram crearRam(RamDTO dto);
     List<Ram> listarTodas();
     Ram buscarPorId(Long id);
+    void eliminarPorComponenteId(Long componenteId);
 }

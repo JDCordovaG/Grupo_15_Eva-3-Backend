@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface MotherboardRepository extends JpaRepository<Motherboard, Long> {
+    void deleteByComponenteId(Long componenteId);
     List<Motherboard> findByActivoTrue();
     Optional<Motherboard> findByIdAndActivoTrue(Long id);
     List<Motherboard> findBySocketIgnoreCaseAndActivoTrue(String socket);

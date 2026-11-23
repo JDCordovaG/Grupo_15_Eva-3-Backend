@@ -2,6 +2,7 @@ package com.BuildMyPC.msvc_build_service.Controllers;
 
 import com.BuildMyPC.msvc_build_service.Models.Build;
 import com.BuildMyPC.msvc_build_service.Models.Dtos.BuildDTO;
+import com.BuildMyPC.msvc_build_service.Models.Dtos.ObservacionTecnicaDTO;
 import com.BuildMyPC.msvc_build_service.Services.BuildService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,6 +38,36 @@ public class BuildController {
         return ResponseEntity.ok(service.listarTodas());
     }
 
+    @GetMapping("/usuario/{usuarioId}")
+    @Operation(summary = "Listar Builds de un usuario")
+    public ResponseEntity<List<Build>> listarPorUsuario(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(service.listarPorUsuario(usuarioId));
+    }
+
+    @GetMapping("/pendientes-revision")
+    @Operation(summary = "Listar builds pendientes de revisión técnica")
+    public ResponseEntity<List<Build>> listarPendientesRevision() {
+        return ResponseEntity.ok(service.listarPendientesRevision());
+    }
+
+    @GetMapping("/revisadas")
+    @Operation(summary = "Listar builds con revisiÃ³n tÃ©cnica completada")
+    public ResponseEntity<List<Build>> listarRevisadas() {
+        return ResponseEntity.ok(service.listarRevisadas());
+    }
+
+    @PatchMapping("/{id}/observaciones-tecnicas")
+    @Operation(summary = "Registrar observación y cerrar revisión técnica")
+    public ResponseEntity<Build> guardarObservacionTecnica(@PathVariable Long id, @Valid @RequestBody ObservacionTecnicaDTO dto) {
+        return ResponseEntity.ok(service.guardarObservacionTecnica(id, dto.getObservacionesTecnicas()));
+    }
+
+    @DeleteMapping("/{id}/observaciones-tecnicas")
+    @Operation(summary = "Eliminar observaciÃ³n y reabrir revisiÃ³n tÃ©cnica")
+    public ResponseEntity<Build> eliminarObservacionTecnica(@PathVariable Long id) {
+        return ResponseEntity.ok(service.eliminarObservacionTecnica(id));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Buscar Build por ID")
     public ResponseEntity<Build> buscarPorId(@PathVariable Long id) {
@@ -49,11 +80,23 @@ public class BuildController {
         return ResponseEntity.ok(service.actualizarBuild(id, dto));
     }
 
+    @PatchMapping("/{id}/archivar")
+    @Operation(summary = "Archivar una Build")
+    public ResponseEntity<Build> archivar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.archivarBuild(id));
+    }
+
+    @PatchMapping("/{id}/desarchivar")
+    @Operation(summary = "Restaurar una Build archivada")
+    public ResponseEntity<Build> desarchivar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.desarchivarBuild(id));
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar Build en borrador", description = "Elimina físicamente la build solo si se encuentra en estado BORRADOR")
     @ApiResponse(responseCode = "204", description = "Build eliminada")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        service.eliminarBuildBorrador(id);
+        service.eliminarBuild(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

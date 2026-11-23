@@ -56,4 +56,10 @@ public class RamServiceImpl implements RamService {
                     return new RamException("Memoria RAM no encontrada con ID: " + id);
                 });
     }
+
+    @Override
+    @Transactional
+    public void eliminarPorComponenteId(Long componenteId) {
+        repository.deleteByComponenteId(componenteId);
+    }
 }

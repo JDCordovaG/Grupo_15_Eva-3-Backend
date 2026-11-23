@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface GpuRepository extends JpaRepository<Gpu, Long> {
+    void deleteByComponenteId(Long componenteId);
     List<Gpu> findByActivoTrue();
     Optional<Gpu> findByIdAndActivoTrue(Long id);
     List<Gpu> findByFabricanteChipIgnoreCaseAndActivoTrue(String fabricanteChip);

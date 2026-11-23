@@ -2,10 +2,10 @@ package com.BuildMyPC.msvc_component_service.Models.Dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
-import java.time.LocalDate;
 
 @Data
 public class ComponentDTO {
@@ -28,6 +28,4 @@ public class ComponentDTO {
     @NotBlank(message = "La descripcion es obligatoria")
     private String descripcion;
 
-    @NotNull(message = "El campo fecha de Lanzamiento no puede estar vacio")
-    private LocalDate fechaLanzamiento;
 }

@@ -10,4 +10,5 @@ public interface MotherboardService {
     List<MotherboardDTO> buscarPorSocket(String socket);
     MotherboardDTO actualizarPlacamadre(Long id, MotherboardDTO dto);
     void desactivarPlacamadre(Long id);
+    void eliminarPorComponenteId(Long componenteId);
 }

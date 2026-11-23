@@ -57,4 +57,10 @@ public class GpuController {
         service.desactivarGpu(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/componente/{componenteId}")
+    public ResponseEntity<Void> eliminarPorComponente(@PathVariable Long componenteId) {
+        service.eliminarPorComponenteId(componenteId);
+        return ResponseEntity.noContent().build();
+    }
 }

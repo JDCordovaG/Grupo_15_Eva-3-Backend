@@ -9,5 +9,8 @@ import java.util.List;
 @Repository
 public interface BuildRepository extends JpaRepository<Build, Long> {
     List<Build> findByEstado(String estado);
+    List<Build> findByUsuarioId(Long usuarioId);
+    List<Build> findByEstadoRevisionIsNullOrEstadoRevision(String estadoRevision);
+    List<Build> findByEstadoRevision(String estadoRevision);
 
 }

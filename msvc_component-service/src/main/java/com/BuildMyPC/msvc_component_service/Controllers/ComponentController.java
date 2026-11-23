@@ -70,4 +70,17 @@ public class ComponentController {
     public ResponseEntity<Component> desactivar(@PathVariable Long id) {
         return ResponseEntity.ok(service.desactivarComponent(id));
     }
+
+    @PatchMapping("/{id}/activar")
+    @Operation(summary = "Reactivar componente descontinuado")
+    public ResponseEntity<Component> activar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.activarComponent(id));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar componente descontinuado")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        service.eliminarComponent(id);
+        return ResponseEntity.noContent().build();
+    }
 }

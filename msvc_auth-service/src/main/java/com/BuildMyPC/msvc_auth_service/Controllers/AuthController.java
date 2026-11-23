@@ -2,6 +2,8 @@ package com.BuildMyPC.msvc_auth_service.Controllers;
 
 import com.BuildMyPC.msvc_auth_service.Models.Auth;
 import com.BuildMyPC.msvc_auth_service.Models.Dtos.AuthDTO;
+import com.BuildMyPC.msvc_auth_service.Models.Dtos.AuthPublicDTO;
+import com.BuildMyPC.msvc_auth_service.Services.JwtServicio;
 import com.BuildMyPC.msvc_auth_service.Models.Dtos.LoginDTO;
 import com.BuildMyPC.msvc_auth_service.Models.Dtos.LoginResponseDTO;
 import com.BuildMyPC.msvc_auth_service.Services.AuthService;
@@ -18,19 +20,23 @@ import java.util.List;
 public class AuthController {
 
     private final AuthService service;
+    private final JwtServicio jwt;
 
-    public AuthController(AuthService service) {
+    public AuthController(AuthService service, JwtServicio jwt) {
         this.service = service;
+        this.jwt = jwt;
     }
 
     @PostMapping
-    public ResponseEntity<Auth> crear(@Valid @RequestBody AuthDTO dto) {
-        return new ResponseEntity<>(service.crearAuth(dto), HttpStatus.CREATED);
+    public ResponseEntity<AuthPublicDTO> crear(@Valid @RequestBody AuthDTO dto) {
+        return new ResponseEntity<>(AuthPublicDTO.desde(service.crearAuth(dto)), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> iniciarSesion(@Valid @RequestBody LoginDTO dto) {
-        return ResponseEntity.ok(LoginResponseDTO.desde(service.autenticar(dto.getEmail(), dto.getPassword())));
+        Auth auth = service.autenticar(dto.getEmail(), dto.getPassword());
+        String token = jwt.generar(auth.getEmail(), auth.getRol(), auth.getId());
+        return ResponseEntity.ok(LoginResponseDTO.desde(auth, token));
     }
 
     @GetMapping

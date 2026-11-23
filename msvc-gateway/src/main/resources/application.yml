@@ -68,12 +68,12 @@ spring:
                 - Path=/api/v1/quotations/**
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
 
 springdoc:
   api-docs:
@@ -119,3 +119,9 @@ springdoc:
 
       - name: Quotation Service
         url: http://localhost:8092/v3/api-docs
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGENES:http://localhost:5173}
+  jwt:
+    secreto: ${JWT_SECRETO:clave-de-desarrollo-de-al-menos-32-bytes}

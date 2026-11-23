@@ -8,6 +8,7 @@ import com.BuildMyPC.msvc_auth_service.Repositories.AuthRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -17,9 +18,11 @@ public class AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
     private final AuthRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(AuthRepository repository) {
+    public AuthService(AuthRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -33,8 +36,8 @@ public class AuthService {
 
         Auth auth = new Auth();
         auth.setEmail(dto.getEmail());
-        auth.setPasswordHash(dto.getPasswordHash());
-        auth.setRol(dto.getRol());
+        auth.setPasswordHash(passwordEncoder.encode(dto.getPasswordHash()));
+        auth.setRol("CLIENTE");
         auth.setEstado("ACTIVO");
 
         Auth guardada = repository.save(auth);
@@ -59,16 +62,32 @@ public class AuthService {
                 .orElseThrow(() -> new AuthException("Auth no encontrada con email: " + email));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Auth autenticar(String email, String password) {
         Auth auth = repository.findByEmail(email)
                 .orElseThrow(CredencialesInvalidasException::new);
-        if (!"ACTIVO".equals(auth.getEstado()) || !auth.getPasswordHash().equals(password)) {
+        if (!"ACTIVO".equals(auth.getEstado()) || !coincideConPassword(auth, password)) {
             throw new CredencialesInvalidasException();
         }
         return auth;
     }
 
+    private boolean coincideConPassword(Auth auth, String password) {
+        String hash = auth.getPasswordHash();
+        if (hash != null && (hash.startsWith("$2a$") || hash.startsWith("$2b$") || hash.startsWith("$2y$"))) {
+            try {
+                return passwordEncoder.matches(password, hash);
+            } catch (IllegalArgumentException ex) {
+                return false;
+            }
+        }
+        if (hash != null && hash.equals(password)) {
+            auth.setPasswordHash(passwordEncoder.encode(password));
+            repository.save(auth);
+            return true;
+        }
+        return false;
+    }
     @Transactional
     public Auth actualizarAuth(Long id, AuthDTO dto) {
         log.info("Actualizando Auth con ID: {}", id);
@@ -79,7 +98,7 @@ public class AuthService {
         }
 
         auth.setEmail(dto.getEmail());
-        auth.setPasswordHash(dto.getPasswordHash());
+        auth.setPasswordHash(passwordEncoder.encode(dto.getPasswordHash()));
         auth.setRol(dto.getRol());
 
         return repository.save(auth);

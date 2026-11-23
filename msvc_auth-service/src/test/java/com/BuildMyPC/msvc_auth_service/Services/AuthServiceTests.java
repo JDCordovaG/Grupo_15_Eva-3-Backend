@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,9 @@ public class AuthServiceTests {
     @Mock
     private AuthRepository authRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private AuthService authService;
 
@@ -36,6 +40,8 @@ public class AuthServiceTests {
 
     @BeforeEach
     public void setUp() {
+        when(passwordEncoder.encode(anyString())).thenAnswer(invocation -> "bcrypt-hash");
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         this.authPrueba = new Auth();
         this.authPrueba.setId(1L);
         this.authPrueba.setEmail("test@buildmypc.com");

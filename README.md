@@ -100,3 +100,9 @@ Backend de BuildMyPC implementado como una arquitectura de microservicios con Sp
 ```
 
 Cada microservicio tiene su propio `pom.xml`, configuración en `src/main/resources` y código bajo `src/main/java`. Los paquetes del dominio organizan clases de configuración, controladores, excepciones, modelos, repositorios y servicios.
+
+## Render: prueba gratuita del inicio de sesión
+
+El Dockerfile admite ejecutar Auth junto al Gateway dentro de un único servicio web. Si Render conserva SERVICE_JAR = msvc-gateway-0.0.1-SNAPSHOT.jar, activa ese modo automáticamente; también se puede seleccionar explícitamente con RENDER_AUTH_BUNDLE = true. Auth escucha solo en 127.0.0.1:8085, mientras el Gateway atiende el puerto PORT público. La ruta de Auth usa el servicio local y el cliente Eureka se desactiva en ambos procesos, de modo que esta prueba de login no depende de levantar Eureka.
+
+Define JWT_SECRETO en las variables de entorno de Render con un valor aleatorio fuerte de al menos 32 caracteres. Auth y Gateway comparten las variables del mismo servicio. Este modo está pensado solo para probar el inicio de sesión dentro del plan gratuito: Auth conserva H2 local, por lo que sus cuentas no se migran desde el equipo local y la persistencia no está garantizada si Render reinicia o reemplaza la instancia. Las otras rutas de la API siguen necesitando sus respectivos microservicios.

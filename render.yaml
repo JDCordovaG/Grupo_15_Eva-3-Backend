@@ -1,11 +1,11 @@
-# Blueprint de BuildMyPC: 12 microservicios + Gateway, todos Docker/Free.
-# Ver DEPLOYMENT.md antes de aplicar: el Postgres Free de Render vence a los 30 días.
+# Despliegue gratuito para inicio de sesión y administración del catálogo.
+# Los servicios restantes pueden añadirse después, según la cuota de Render.
 databases:
-  - name: buildmypc-db
-    databaseName: buildmypc
-    user: buildmypc
+  - name: buildmypc-core-db
+    databaseName: buildmypc_core_db
+    user: buildmypc_core_db_user
     plan: free
-    region: ohio
+    region: virginia
     postgresMajorVersion: "18"
 
 envVarGroups:
@@ -18,10 +18,45 @@ envVarGroups:
 
 services:
   - type: web
+    name: Grupo_15_Eva-3-Backend
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+    envVarGroups:
+      - buildmypc-shared-secrets
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: EUREKA_CLIENT_ENABLED
+        value: "false"
+      - key: SERVICE_JAR
+        value: msvc-gateway-0.0.1-SNAPSHOT.jar
+      - key: CORS_ORIGENES
+        value: https://grupo-15-eva-3-frontend.vercel.app
+      - key: AUTH_SERVICE_URL
+        value: https://buildmypc-g15-auth.onrender.com
+      - key: COMPONENT_SERVICE_URL
+        value: https://buildmypc-g15-components.onrender.com
+      - key: CPU_SERVICE_URL
+        value: https://buildmypc-g15-cpus.onrender.com
+      - key: GPU_SERVICE_URL
+        value: https://buildmypc-g15-gpus.onrender.com
+      - key: MOTHERBOARD_SERVICE_URL
+        value: https://buildmypc-g15-motherboards.onrender.com
+      - key: RAM_SERVICE_URL
+        value: https://buildmypc-g15-rams.onrender.com
+      - key: POWER_SUPPLY_SERVICE_URL
+        value: https://buildmypc-g15-power-supplies.onrender.com
+
+  - type: web
     name: buildmypc-g15-auth
     runtime: docker
     plan: free
-    region: ohio
+    region: virginia
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /actuator/health
@@ -37,75 +72,42 @@ services:
         value: msvc_auth-service-0.0.1-SNAPSHOT.jar
       - key: DB_HOST
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: host
       - key: DB_PORT
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: port
       - key: DB_NAME
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: database
       - key: DB_USUARIO
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: user
       - key: DB_CLAVE
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: password
       - key: DB_SCHEMA
         value: auth_service
-      - key: USER_SERVICE_URL
-        value: https://buildmypc-g15-users.onrender.com
-
-  - type: web
-    name: buildmypc-g15-users
-    runtime: docker
-    plan: free
-    region: ohio
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    healthCheckPath: /actuator/health
-    autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
-    envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: render
-      - key: EUREKA_CLIENT_ENABLED
-        value: "false"
-      - key: SERVICE_JAR
-        value: msvc_user-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-db
-          property: password
-      - key: DB_SCHEMA
-        value: user_service
+      - key: AUTH_BOOTSTRAP_ENABLED
+        value: "true"
+      - key: BOOTSTRAP_ADMIN_EMAIL
+        value: administrador@buildmypc.cl
+      - key: BOOTSTRAP_ADMIN_PASSWORD
+        generateValue: true
+      - key: BOOTSTRAP_TECH_EMAIL
+        value: tecnico@buildmypc.cl
+      - key: BOOTSTRAP_TECH_PASSWORD
+        generateValue: true
 
   - type: web
     name: buildmypc-g15-components
     runtime: docker
     plan: free
-    region: ohio
+    region: virginia
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /actuator/health
@@ -121,23 +123,23 @@ services:
         value: msvc_component-service-0.0.1-SNAPSHOT.jar
       - key: DB_HOST
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: host
       - key: DB_PORT
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: port
       - key: DB_NAME
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: database
       - key: DB_USUARIO
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: user
       - key: DB_CLAVE
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: password
       - key: DB_SCHEMA
         value: component_service
@@ -146,7 +148,7 @@ services:
     name: buildmypc-g15-cpus
     runtime: docker
     plan: free
-    region: ohio
+    region: virginia
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /actuator/health
@@ -162,23 +164,23 @@ services:
         value: msvc_cpu-service-0.0.1-SNAPSHOT.jar
       - key: DB_HOST
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: host
       - key: DB_PORT
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: port
       - key: DB_NAME
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: database
       - key: DB_USUARIO
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: user
       - key: DB_CLAVE
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: password
       - key: DB_SCHEMA
         value: cpu_service
@@ -189,7 +191,7 @@ services:
     name: buildmypc-g15-gpus
     runtime: docker
     plan: free
-    region: ohio
+    region: virginia
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /actuator/health
@@ -205,23 +207,23 @@ services:
         value: msvc_gpu-service-0.0.1-SNAPSHOT.jar
       - key: DB_HOST
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: host
       - key: DB_PORT
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: port
       - key: DB_NAME
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: database
       - key: DB_USUARIO
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: user
       - key: DB_CLAVE
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: password
       - key: DB_SCHEMA
         value: gpu_service
@@ -232,7 +234,7 @@ services:
     name: buildmypc-g15-motherboards
     runtime: docker
     plan: free
-    region: ohio
+    region: virginia
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /actuator/health
@@ -248,23 +250,23 @@ services:
         value: msvc_motherboard-service-0.0.1-SNAPSHOT.jar
       - key: DB_HOST
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: host
       - key: DB_PORT
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: port
       - key: DB_NAME
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: database
       - key: DB_USUARIO
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: user
       - key: DB_CLAVE
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: password
       - key: DB_SCHEMA
         value: motherboard_service
@@ -275,7 +277,7 @@ services:
     name: buildmypc-g15-rams
     runtime: docker
     plan: free
-    region: ohio
+    region: virginia
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /actuator/health
@@ -291,32 +293,34 @@ services:
         value: msvc_ram-service-0.0.1-SNAPSHOT.jar
       - key: DB_HOST
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: host
       - key: DB_PORT
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: port
       - key: DB_NAME
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: database
       - key: DB_USUARIO
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: user
       - key: DB_CLAVE
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: password
       - key: DB_SCHEMA
         value: ram_service
+      - key: COMPONENT_SERVICE_URL
+        value: https://buildmypc-g15-components.onrender.com
 
   - type: web
     name: buildmypc-g15-power-supplies
     runtime: docker
     plan: free
-    region: ohio
+    region: virginia
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /actuator/health
@@ -332,256 +336,25 @@ services:
         value: msvc_power-supply-service-0.0.1-SNAPSHOT.jar
       - key: DB_HOST
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: host
       - key: DB_PORT
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: port
       - key: DB_NAME
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: database
       - key: DB_USUARIO
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: user
       - key: DB_CLAVE
         fromDatabase:
-          name: buildmypc-db
+          name: buildmypc-core-db
           property: password
       - key: DB_SCHEMA
         value: power_supply_service
       - key: COMPONENT_SERVICE_URL
         value: https://buildmypc-g15-components.onrender.com
-
-  - type: web
-    name: buildmypc-g15-builds
-    runtime: docker
-    plan: free
-    region: ohio
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    healthCheckPath: /actuator/health
-    autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
-    envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: render
-      - key: EUREKA_CLIENT_ENABLED
-        value: "false"
-      - key: SERVICE_JAR
-        value: msvc_build-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-db
-          property: password
-      - key: DB_SCHEMA
-        value: build_service
-      - key: COMPATIBILITY_SERVICE_URL
-        value: https://buildmypc-g15-compatibility.onrender.com
-      - key: AUTH_SERVICE_URL
-        value: https://buildmypc-g15-auth.onrender.com
-
-  - type: web
-    name: buildmypc-g15-compatibility
-    runtime: docker
-    plan: free
-    region: ohio
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    healthCheckPath: /actuator/health
-    autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
-    envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: render
-      - key: EUREKA_CLIENT_ENABLED
-        value: "false"
-      - key: SERVICE_JAR
-        value: msvc_compatibility-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-db
-          property: password
-      - key: DB_SCHEMA
-        value: compatibility_service
-      - key: CPU_SERVICE_URL
-        value: https://buildmypc-g15-cpus.onrender.com
-      - key: GPU_SERVICE_URL
-        value: https://buildmypc-g15-gpus.onrender.com
-      - key: MOTHERBOARD_SERVICE_URL
-        value: https://buildmypc-g15-motherboards.onrender.com
-      - key: POWER_SUPPLY_SERVICE_URL
-        value: https://buildmypc-g15-power-supplies.onrender.com
-      - key: RAM_SERVICE_URL
-        value: https://buildmypc-g15-rams.onrender.com
-
-  - type: web
-    name: buildmypc-g15-benchmarks
-    runtime: docker
-    plan: free
-    region: ohio
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    healthCheckPath: /actuator/health
-    autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
-    envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: render
-      - key: EUREKA_CLIENT_ENABLED
-        value: "false"
-      - key: SERVICE_JAR
-        value: msvc_benchmark-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-db
-          property: password
-      - key: DB_SCHEMA
-        value: benchmark_service
-      - key: GPU_SERVICE_URL
-        value: https://buildmypc-g15-gpus.onrender.com
-      - key: CPU_SERVICE_URL
-        value: https://buildmypc-g15-cpus.onrender.com
-      - key: BUILD_SERVICE_URL
-        value: https://buildmypc-g15-builds.onrender.com
-
-  - type: web
-    name: buildmypc-g15-quotations
-    runtime: docker
-    plan: free
-    region: ohio
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    healthCheckPath: /actuator/health
-    autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
-    envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: render
-      - key: EUREKA_CLIENT_ENABLED
-        value: "false"
-      - key: SERVICE_JAR
-        value: msvc_quotation-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-db
-          property: password
-      - key: DB_SCHEMA
-        value: quotation_service
-      - key: COMPATIBILITY_SERVICE_URL
-        value: https://buildmypc-g15-compatibility.onrender.com
-
-  - type: web
-    name: buildmypc-g15-gateway
-    runtime: docker
-    plan: free
-    region: ohio
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    healthCheckPath: /actuator/health
-    autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
-    envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: render
-      - key: EUREKA_CLIENT_ENABLED
-        value: "false"
-      - key: SERVICE_JAR
-        value: msvc-gateway-0.0.1-SNAPSHOT.jar
-      - key: CORS_ORIGENES
-        sync: false
-      - key: AUTH_SERVICE_URL
-        value: https://buildmypc-g15-auth.onrender.com
-      - key: USER_SERVICE_URL
-        value: https://buildmypc-g15-users.onrender.com
-      - key: COMPONENT_SERVICE_URL
-        value: https://buildmypc-g15-components.onrender.com
-      - key: CPU_SERVICE_URL
-        value: https://buildmypc-g15-cpus.onrender.com
-      - key: GPU_SERVICE_URL
-        value: https://buildmypc-g15-gpus.onrender.com
-      - key: MOTHERBOARD_SERVICE_URL
-        value: https://buildmypc-g15-motherboards.onrender.com
-      - key: RAM_SERVICE_URL
-        value: https://buildmypc-g15-rams.onrender.com
-      - key: POWER_SUPPLY_SERVICE_URL
-        value: https://buildmypc-g15-power-supplies.onrender.com
-      - key: BUILD_SERVICE_URL
-        value: https://buildmypc-g15-builds.onrender.com
-      - key: COMPATIBILITY_SERVICE_URL
-        value: https://buildmypc-g15-compatibility.onrender.com
-      - key: BENCHMARK_SERVICE_URL
-        value: https://buildmypc-g15-benchmarks.onrender.com
-      - key: QUOTATION_SERVICE_URL
-        value: https://buildmypc-g15-quotations.onrender.com

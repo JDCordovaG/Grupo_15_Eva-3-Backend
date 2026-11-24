@@ -1,60 +1,37 @@
-# Publicación de BuildMyPC
+# Despliegue BuildMyPC en Render
 
-Esta configuración despliega el frontend en Vercel y los 12 microservicios de dominio más el Gateway en Render. Los repositorios de ejemplo de compañeros no forman parte del proceso.
+El Blueprint publica el Gateway y los microservicios de Auth, usuarios, builds, compatibilidad, benchmarks, cotizaciones, componentes y catálogo técnico (CPU, GPU, placa madre, RAM y fuente de poder). Eureka queda deshabilitado porque los servicios se conectan por URL directa. La aplicación usa Supabase como PostgreSQL; el Postgres `buildmypc-core-db` de Render se conserva en el Blueprint, pero no es la base activa y tiene vencimiento propio.
 
-## 1. Publicar el frontend en Vercel
+## Recursos del Blueprint
 
-Conecta el repositorio `Grupo_15_Eva-3-Frontend` en Vercel, con la carpeta raíz del proyecto (`.`). Usa:
+- Todos los servicios usan Docker, `./Dockerfile`, contexto `.`, y `plan: free`.
+- El Gateway existente conserva el nombre y dominio `grupo-15-eva-3-backend.onrender.com`.
+- Los servicios existentes conservan sus variables Supabase configuradas en Render. Los cinco servicios nuevos reutilizan las variables `DB_*` del servicio Auth mediante referencias `fromService`; cada servicio usa su propio esquema.
+- Gateway y microservicios comparten `JWT_SECRETO` e `INTERNAL_SERVICE_TOKEN` mediante el grupo `buildmypc-shared-secrets`.
+- El Gateway enruta a todos los microservicios con URLs explícitas definidas en `render.yaml`.
+- `CORS_ORIGENES` debe coincidir con `https://grupo-15-eva-3-frontend.vercel.app` (sin barra final).
 
-- Framework: Vite
-- Build command: `npm run build`
-- Output directory: `dist`
-- Variable de producción `VITE_API_URL`: `https://buildmypc-g15-gateway.onrender.com/api`
+## Aplicación
 
-Puedes desplegar Vercel primero: el dominio del Gateway queda reservado por el nombre del Blueprint y Render lo pondrá en línea después. Si Render exige cambiar el slug por disponibilidad, actualiza `VITE_API_URL` con el nuevo dominio y vuelve a desplegar Vercel. Anota el dominio de producción de Vercel para el paso 3.
+1. Publica el contenido de `render.yaml` en la rama de GitHub que se usará para el Blueprint.
+2. En Render, crea o sincroniza el Blueprint desde `Grupo_15_Eva-3-Backend`. Revisa que el recurso `Grupo_15_Eva-3-Backend` se asocie al Gateway existente y que `buildmypc-core-db` se asocie al Postgres creado para esta configuración.
+3. Revisa la sincronización del Blueprint y espera que los trece Web Services queden disponibles. Cada servicio selecciona su ejecutable con `SERVICE_JAR`.
+4. En Vercel, configura `VITE_API_URL` como `https://grupo-15-eva-3-backend.onrender.com/api` y vuelve a desplegar el Frontend.
 
-## 2. Aplicar el Blueprint de Render
+## Cuentas por rol
 
-1. Confirma que los cambios de este backend estén en el remoto GitHub y en la rama que usarás para Render. Render lee `render.yaml` desde el remoto, no desde tu disco.
-2. En Render, crea un Blueprint desde el repositorio `Grupo_15_Eva-3-Backend`. El archivo `render.yaml` crea un Postgres y 13 Web Services.
-3. En el valor solicitado para `CORS_ORIGENES`, pega el origen exacto de Vercel, por ejemplo `https://buildmypc.vercel.app`, sin barra final ni ruta. Render generará `JWT_SECRETO` y `INTERNAL_SERVICE_TOKEN` en un grupo compartido.
-4. En cada servicio confirma **Language: Docker**, **Compute: Free ($0/month)**, Dockerfile Path `./Dockerfile` y contexto `.`. El Blueprint ya establece esos valores.
-5. Aplica y espera a que los servicios reporten estado Live. El Gateway tiene health check en `/actuator/health`.
+La base de datos recién creada no trae cuentas existentes. El endpoint público de registro crea cuentas `CLIENTE`; no permite elevar el rol desde el formulario. Al iniciar Auth en Render, el bootstrap crea idempotentemente una cuenta `ADMINISTRADOR` y otra `TECNICO` con contraseñas aleatorias generadas por Render. Lee ambas contraseñas desde las variables del servicio Auth en Render y guárdalas de forma segura. No se deben habilitar roles privilegiados en el registro público.
 
-El Dockerfile de la raíz compila todos los módulos Maven y selecciona el JAR de cada servicio mediante `SERVICE_JAR`. Mantén Root Directory vacío (raíz del repositorio). No configures un servicio por subcarpeta.
+## Límite del plan gratuito
 
-### Si aparece `SERVICE_JAR must identify the executable Spring Boot JAR`
+Los Web Services gratuitos tienen recursos limitados y pueden suspenderse cuando permanecen inactivos. Las solicitudes entre servicios pueden despertar varias instancias y demorar más la primera vez. El Postgres de Render no contiene la base activa de la aplicación; las tablas y datos están en Supabase.
 
-El contenedor inicia el Gateway por defecto si `SERVICE_JAR` está ausente o vacío. Si creaste los servicios manualmente, agrega en cada Web Service el valor correspondiente de la tabla. Si usas el Blueprint, sincronízalo para que cada servicio reciba su JAR asignado. Luego despliega el último commit.
+## Revisión después del despliegue
 
-El Gateway requiere `msvc-gateway-0.0.1-SNAPSHOT.jar`; los demás servicios requieren su propio JAR según la tabla de abajo. El valor predeterminado permite que un servicio manual arranque el Gateway, pero no inicia los otros microservicios ni la base de datos. Para el Backend completo, despliega los 13 servicios definidos por el Blueprint.
-
-Si también aparece `Port scan timeout reached, no open ports detected`, es un efecto secundario: al salir con estado 2, la aplicación nunca alcanza a iniciar el servidor HTTP ni abrir el puerto de Render.
-
-## 3. Conexión Vercel ↔ Render
-
-El Gateway está previsto en `https://buildmypc-g15-gateway.onrender.com`. Cuando esté Live:
-
-1. Asegúrate de que la variable de Vercel `VITE_API_URL` sea `https://<gateway>.onrender.com/api`.
-2. Asegúrate de que la variable de Render `CORS_ORIGENES` contenga el dominio de producción de Vercel, sin barra final.
-3. Si cambias alguna variable, vuelve a desplegar el servicio que la consume.
-
-El navegador llama solo al Gateway. El Gateway enruta cada API y añade un token interno; Feign envía ese mismo token en las llamadas entre microservicios. Así, aunque los servicios gratuitos tengan URL pública, sus endpoints `/api/**` rechazan llamadas directas sin el token. Los endpoints de salud y documentación OpenAPI permanecen disponibles para Render y Swagger.
-
-## Persistencia y límites del plan gratuito
-
-El Blueprint provisiona un único PostgreSQL Free y crea un esquema separado por microservicio. El almacenamiento local H2 queda solo para desarrollo; en Render cada servicio usa PostgreSQL y su filesystem efímero no se necesita para guardar datos.
-
-Render entrega 750 horas gratuitas por workspace y mes, compartidas entre sus servicios gratuitos. Los servicios se suspenden al agotarlas. Los Web Services gratuitos duermen tras 15 minutos sin tráfico, tardan cerca de un minuto en despertar y pueden reiniciarse; una primera navegación puede demorar o vencer en servicios que se despierten en cadena. El plan Free entrega 512 MB de RAM por servicio. El Dockerfile limita la memoria de la JVM para reducir el riesgo de OOM, aunque la capacidad final depende del uso real.
-
-El PostgreSQL Free de Render tiene 1 GB y expira 30 días después de crearse; Render elimina sus datos si no se actualiza antes de vencer el periodo de gracia. Es adecuado para una demostración temporal, no para conservar datos de forma permanente. Antes de vencer, exporta la base o migra a un PostgreSQL persistente.
-
-## Comprobación después del despliegue
-
-- Gateway: `https://<gateway>.onrender.com/actuator/health`
-- Estado público del Gateway: `https://<gateway>.onrender.com/`
-- Swagger del Gateway: `https://<gateway>.onrender.com/docs/swagger-ui.html`
-- API de componentes: `https://<gateway>.onrender.com/api/v1/components`
-- Frontend: abre el dominio de Vercel, recarga una ruta interna y prueba una operación que consulte la API.
-
-Si una operación devuelve 503/502, revisa los logs del Gateway y del servicio de destino, el estado de Render de ambos servicios, y que la URL del Gateway en Vercel y el origen CORS de Render coincidan con los dominios reales.
+- Gateway: `https://grupo-15-eva-3-backend.onrender.com/actuator/health`
+- Login: `POST https://grupo-15-eva-3-backend.onrender.com/api/v1/auths/login`
+- Catálogo general: `GET https://grupo-15-eva-3-backend.onrender.com/api/v1/components`
+- Catálogo técnico: `GET .../api/v1/cpus`, `/api/v1/gpus`, `/api/v1/placas-madre`, `/api/v1/rams`, `/api/v1/fuentes-poder`
+- Builds por usuario: `GET .../api/v1/builds/usuario/{usuarioId}`
+- Bandeja técnica: `GET .../api/v1/builds/pendientes-revision` y `GET .../api/v1/builds/revisadas`
+- Crear un componente completo desde la cuenta Admin prueba la escritura del registro general y de sus atributos técnicos.

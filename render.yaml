@@ -68,26 +68,7 @@ services:
         value: "false"
       - key: SERVICE_JAR
         value: msvc_auth-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-core-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-core-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-core-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-core-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-core-db
-          property: password
+      # DB_* values are managed in Render Dashboard for the external Supabase database.
       - key: DB_SCHEMA
         value: auth_service
       - key: AUTH_BOOTSTRAP_ENABLED
@@ -118,26 +99,7 @@ services:
         value: "false"
       - key: SERVICE_JAR
         value: msvc_component-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-core-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-core-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-core-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-core-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-core-db
-          property: password
+      # DB_* values are managed in Render Dashboard for the external Supabase database.
       - key: DB_SCHEMA
         value: component_service
 
@@ -158,26 +120,7 @@ services:
         value: "false"
       - key: SERVICE_JAR
         value: msvc_cpu-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-core-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-core-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-core-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-core-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-core-db
-          property: password
+      # DB_* values are managed in Render Dashboard for the external Supabase database.
       - key: DB_SCHEMA
         value: cpu_service
       - key: COMPONENT_SERVICE_URL
@@ -200,26 +143,7 @@ services:
         value: "false"
       - key: SERVICE_JAR
         value: msvc_gpu-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-core-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-core-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-core-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-core-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-core-db
-          property: password
+      # DB_* values are managed in Render Dashboard for the external Supabase database.
       - key: DB_SCHEMA
         value: gpu_service
       - key: COMPONENT_SERVICE_URL
@@ -242,26 +166,7 @@ services:
         value: "false"
       - key: SERVICE_JAR
         value: msvc_motherboard-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-core-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-core-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-core-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-core-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-core-db
-          property: password
+      # DB_* values are managed in Render Dashboard for the external Supabase database.
       - key: DB_SCHEMA
         value: motherboard_service
       - key: COMPONENT_SERVICE_URL
@@ -284,26 +189,7 @@ services:
         value: "false"
       - key: SERVICE_JAR
         value: msvc_ram-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-core-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-core-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-core-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-core-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-core-db
-          property: password
+      # DB_* values are managed in Render Dashboard for the external Supabase database.
       - key: DB_SCHEMA
         value: ram_service
       - key: COMPONENT_SERVICE_URL
@@ -326,26 +212,7 @@ services:
         value: "false"
       - key: SERVICE_JAR
         value: msvc_power-supply-service-0.0.1-SNAPSHOT.jar
-      - key: DB_HOST
-        fromDatabase:
-          name: buildmypc-core-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: buildmypc-core-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: buildmypc-core-db
-          property: database
-      - key: DB_USUARIO
-        fromDatabase:
-          name: buildmypc-core-db
-          property: user
-      - key: DB_CLAVE
-        fromDatabase:
-          name: buildmypc-core-db
-          property: password
+      # DB_* values are managed in Render Dashboard for the external Supabase database.
       - key: DB_SCHEMA
         value: power_supply_service
       - key: COMPONENT_SERVICE_URL

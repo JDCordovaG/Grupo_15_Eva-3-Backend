@@ -72,6 +72,7 @@ Backend de BuildMyPC implementado como una arquitectura de microservicios con Sp
 - En desarrollo, los servicios usan bases H2 locales en `data/` y registran sus instancias en Eureka (`http://localhost:8761/eureka/`).
 - Para desarrollo local, el Gateway permite por defecto el origen `http://localhost:5173`. Se puede configurar con `CORS_ORIGENES`.
 - Auth firma JWT y el Gateway valida los tokens. La duración configurada es de una hora. Para entornos desplegados, configura un `JWT_SECRETO` aleatorio de al menos 32 bytes en Auth y Gateway.
+- Consulta [DEPLOYMENT.md](DEPLOYMENT.md) para las variables de producción, el despliegue Docker en Render y la URL del Gateway que debe configurar Vercel. La arquitectura completa requiere varios procesos; revisa el límite de horas del plan gratuito antes de publicarla.
 
 ## Estructura de carpetas
 

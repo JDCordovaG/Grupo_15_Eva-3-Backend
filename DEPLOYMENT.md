@@ -25,9 +25,11 @@ El Dockerfile de la raíz compila todos los módulos Maven y selecciona el JAR d
 
 ### Si aparece `SERVICE_JAR must identify the executable Spring Boot JAR`
 
-El contenedor inició sin recibir la variable `SERVICE_JAR`. En Render, cada Web Service debe tener el valor correspondiente en **Environment**. Si creaste los servicios manualmente, agrégala servicio por servicio; si usas el Blueprint, sincroniza el `render.yaml` actualizado y confirma que sus variables se aplicaron. Luego despliega el último commit.
+El contenedor inicia el Gateway por defecto si `SERVICE_JAR` está ausente o vacío. Si creaste los servicios manualmente, agrega en cada Web Service el valor correspondiente de la tabla. Si usas el Blueprint, sincronízalo para que cada servicio reciba su JAR asignado. Luego despliega el último commit.
 
-No basta con un único servicio llamado “Backend”: el repositorio contiene varios JAR ejecutables. El Gateway requiere `msvc-gateway-0.0.1-SNAPSHOT.jar`; los demás servicios requieren su propio JAR según la tabla de abajo. El Dockerfile ahora reporta si falta la variable o si el archivo indicado no existe en la imagen.
+El Gateway requiere `msvc-gateway-0.0.1-SNAPSHOT.jar`; los demás servicios requieren su propio JAR según la tabla de abajo. El valor predeterminado permite que un servicio manual arranque el Gateway, pero no inicia los otros microservicios ni la base de datos. Para el Backend completo, despliega los 13 servicios definidos por el Blueprint.
+
+Si también aparece `Port scan timeout reached, no open ports detected`, es un efecto secundario: al salir con estado 2, la aplicación nunca alcanza a iniciar el servidor HTTP ni abrir el puerto de Render.
 
 ## 3. Conexión Vercel ↔ Render
 

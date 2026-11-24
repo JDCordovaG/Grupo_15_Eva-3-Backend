@@ -1,5 +1,4 @@
-# Despliegue gratuito para inicio de sesión y administración del catálogo.
-# Los servicios restantes pueden añadirse después, según la cuota de Render.
+# Microservicios BuildMyPC en Render con plan gratuito.
 databases:
   - name: buildmypc-core-db
     databaseName: buildmypc_core_db
@@ -50,6 +49,16 @@ services:
         value: https://buildmypc-g15-rams.onrender.com
       - key: POWER_SUPPLY_SERVICE_URL
         value: https://buildmypc-g15-power-supplies.onrender.com
+      - key: BUILD_SERVICE_URL
+        value: https://buildmypc-g15-builds.onrender.com
+      - key: COMPATIBILITY_SERVICE_URL
+        value: https://buildmypc-g15-compatibility.onrender.com
+      - key: USER_SERVICE_URL
+        value: https://buildmypc-g15-users.onrender.com
+      - key: BENCHMARK_SERVICE_URL
+        value: https://buildmypc-g15-benchmarks.onrender.com
+      - key: QUOTATION_SERVICE_URL
+        value: https://buildmypc-g15-quotations.onrender.com
 
   - type: web
     name: buildmypc-g15-auth
@@ -217,3 +226,250 @@ services:
         value: power_supply_service
       - key: COMPONENT_SERVICE_URL
         value: https://buildmypc-g15-components.onrender.com
+
+  - type: web
+    name: buildmypc-g15-builds
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+    envVars:
+      - fromGroup: buildmypc-shared-secrets
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: EUREKA_CLIENT_ENABLED
+        value: "false"
+      - key: SERVICE_JAR
+        value: msvc_build-service-0.0.1-SNAPSHOT.jar
+      - key: DB_HOST
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_HOST
+      - key: DB_PORT
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_PORT
+      - key: DB_NAME
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_NAME
+      - key: DB_USUARIO
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_USUARIO
+      - key: DB_CLAVE
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_CLAVE
+      - key: DB_SCHEMA
+        value: build_service
+      - key: AUTH_SERVICE_URL
+        value: https://buildmypc-g15-auth.onrender.com
+      - key: COMPATIBILITY_SERVICE_URL
+        value: https://buildmypc-g15-compatibility.onrender.com
+
+  - type: web
+    name: buildmypc-g15-compatibility
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+    envVars:
+      - fromGroup: buildmypc-shared-secrets
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: EUREKA_CLIENT_ENABLED
+        value: "false"
+      - key: SERVICE_JAR
+        value: msvc_compatibility-service-0.0.1-SNAPSHOT.jar
+      - key: DB_HOST
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_HOST
+      - key: DB_PORT
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_PORT
+      - key: DB_NAME
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_NAME
+      - key: DB_USUARIO
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_USUARIO
+      - key: DB_CLAVE
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_CLAVE
+      - key: DB_SCHEMA
+        value: compatibility_service
+      - key: CPU_SERVICE_URL
+        value: https://buildmypc-g15-cpus.onrender.com
+      - key: GPU_SERVICE_URL
+        value: https://buildmypc-g15-gpus.onrender.com
+      - key: MOTHERBOARD_SERVICE_URL
+        value: https://buildmypc-g15-motherboards.onrender.com
+      - key: RAM_SERVICE_URL
+        value: https://buildmypc-g15-rams.onrender.com
+      - key: POWER_SUPPLY_SERVICE_URL
+        value: https://buildmypc-g15-power-supplies.onrender.com
+
+  - type: web
+    name: buildmypc-g15-users
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+    envVars:
+      - fromGroup: buildmypc-shared-secrets
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: EUREKA_CLIENT_ENABLED
+        value: "false"
+      - key: SERVICE_JAR
+        value: msvc_user-service-0.0.1-SNAPSHOT.jar
+      - key: DB_HOST
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_HOST
+      - key: DB_PORT
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_PORT
+      - key: DB_NAME
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_NAME
+      - key: DB_USUARIO
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_USUARIO
+      - key: DB_CLAVE
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_CLAVE
+      - key: DB_SCHEMA
+        value: user_service
+
+  - type: web
+    name: buildmypc-g15-benchmarks
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+    envVars:
+      - fromGroup: buildmypc-shared-secrets
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: EUREKA_CLIENT_ENABLED
+        value: "false"
+      - key: SERVICE_JAR
+        value: msvc_benchmark-service-0.0.1-SNAPSHOT.jar
+      - key: DB_HOST
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_HOST
+      - key: DB_PORT
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_PORT
+      - key: DB_NAME
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_NAME
+      - key: DB_USUARIO
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_USUARIO
+      - key: DB_CLAVE
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_CLAVE
+      - key: DB_SCHEMA
+        value: benchmark_service
+      - key: CPU_SERVICE_URL
+        value: https://buildmypc-g15-cpus.onrender.com
+      - key: GPU_SERVICE_URL
+        value: https://buildmypc-g15-gpus.onrender.com
+      - key: BUILD_SERVICE_URL
+        value: https://buildmypc-g15-builds.onrender.com
+
+  - type: web
+    name: buildmypc-g15-quotations
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+    envVars:
+      - fromGroup: buildmypc-shared-secrets
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: EUREKA_CLIENT_ENABLED
+        value: "false"
+      - key: SERVICE_JAR
+        value: msvc_quotation-service-0.0.1-SNAPSHOT.jar
+      - key: DB_HOST
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_HOST
+      - key: DB_PORT
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_PORT
+      - key: DB_NAME
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_NAME
+      - key: DB_USUARIO
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_USUARIO
+      - key: DB_CLAVE
+        fromService:
+          name: buildmypc-g15-auth
+          type: web
+          envVarKey: DB_CLAVE
+      - key: DB_SCHEMA
+        value: quotation_service
+      - key: COMPATIBILITY_SERVICE_URL
+        value: https://buildmypc-g15-compatibility.onrender.com

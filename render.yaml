@@ -26,9 +26,8 @@ services:
     dockerContext: .
     healthCheckPath: /actuator/health
     autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
     envVars:
+      - fromGroup: buildmypc-shared-secrets
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: EUREKA_CLIENT_ENABLED
@@ -61,9 +60,8 @@ services:
     dockerContext: .
     healthCheckPath: /actuator/health
     autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
     envVars:
+      - fromGroup: buildmypc-shared-secrets
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: EUREKA_CLIENT_ENABLED
@@ -112,9 +110,8 @@ services:
     dockerContext: .
     healthCheckPath: /actuator/health
     autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
     envVars:
+      - fromGroup: buildmypc-shared-secrets
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: EUREKA_CLIENT_ENABLED
@@ -153,9 +150,8 @@ services:
     dockerContext: .
     healthCheckPath: /actuator/health
     autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
     envVars:
+      - fromGroup: buildmypc-shared-secrets
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: EUREKA_CLIENT_ENABLED
@@ -196,9 +192,8 @@ services:
     dockerContext: .
     healthCheckPath: /actuator/health
     autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
     envVars:
+      - fromGroup: buildmypc-shared-secrets
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: EUREKA_CLIENT_ENABLED
@@ -239,9 +234,8 @@ services:
     dockerContext: .
     healthCheckPath: /actuator/health
     autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
     envVars:
+      - fromGroup: buildmypc-shared-secrets
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: EUREKA_CLIENT_ENABLED
@@ -282,9 +276,8 @@ services:
     dockerContext: .
     healthCheckPath: /actuator/health
     autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
     envVars:
+      - fromGroup: buildmypc-shared-secrets
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: EUREKA_CLIENT_ENABLED
@@ -325,9 +318,8 @@ services:
     dockerContext: .
     healthCheckPath: /actuator/health
     autoDeployTrigger: commit
-    envVarGroups:
-      - buildmypc-shared-secrets
     envVars:
+      - fromGroup: buildmypc-shared-secrets
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: EUREKA_CLIENT_ENABLED

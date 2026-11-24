@@ -10,6 +10,6 @@ WORKDIR /app
 COPY --from=build /workspace/msvc_*/target/*.jar /app/
 ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=40 -XX:MaxMetaspaceSize=160m -XX:ReservedCodeCacheSize=32m -XX:+UseSerialGC"
 EXPOSE 10000
-ENTRYPOINT ["sh", "-c", "test -n \"$SERVICE_JAR\" || { echo 'SERVICE_JAR must identify the executable Spring Boot JAR' >&2; exit 2; }; exec java -jar \"/app/$SERVICE_JAR\""]
+ENTRYPOINT ["sh", "-c", "if [ -z \"${SERVICE_JAR:-}\" ]; then echo 'SERVICE_JAR is missing. Set it in Render for this service, for example msvc-gateway-0.0.1-SNAPSHOT.jar. Valid values are listed in DEPLOYMENT.md.' >&2; exit 2; fi; if [ ! -f \"/app/$SERVICE_JAR\" ]; then echo \"SERVICE_JAR not found: /app/$SERVICE_JAR. Check its exact value against DEPLOYMENT.md.\" >&2; exit 2; fi; exec java -jar \"/app/$SERVICE_JAR\""]
 COPY --from=build /workspace/msvc-eureka/target/*.jar /app/
 COPY --from=build /workspace/msvc-gateway/target/*.jar /app/

@@ -30,7 +30,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**", "/error",
-                                "/v3/api-docs/**", "/swagger-ui/**", "/docs/swagger-ui.html").permitAll()
+                                "/v3/api-docs/**", "/swagger-ui/**", "/docs/swagger-ui.html",
+                                "/docs/api/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auths", "/api/v1/auths/login").permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/components/**", "/api/v1/cpus/**", "/api/v1/gpus/**",

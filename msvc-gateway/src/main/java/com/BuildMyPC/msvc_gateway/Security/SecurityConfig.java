@@ -29,6 +29,7 @@ public class SecurityConfig {
                                 escribirError(response, HttpServletResponse.SC_FORBIDDEN, "Sin permiso para esta acción")))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**", "/error",
                                 "/v3/api-docs/**", "/swagger-ui/**", "/docs/swagger-ui.html",
                                 "/docs/api/**").permitAll()

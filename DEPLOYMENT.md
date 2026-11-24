@@ -52,6 +52,7 @@ El PostgreSQL Free de Render tiene 1 GB y expira 30 días después de crearse; R
 ## Comprobación después del despliegue
 
 - Gateway: `https://<gateway>.onrender.com/actuator/health`
+- Estado público del Gateway: `https://<gateway>.onrender.com/`
 - Swagger del Gateway: `https://<gateway>.onrender.com/docs/swagger-ui.html`
 - API de componentes: `https://<gateway>.onrender.com/api/v1/components`
 - Frontend: abre el dominio de Vercel, recarga una ruta interna y prueba una operación que consulte la API.

@@ -35,6 +35,7 @@
 
 	<packaging>pom</packaging>
 	<modules>
+		<module>msvc_internal-security</module>
 		<module>msvc_auth-service</module>
 		<module>msvc_benchmark-service</module>
 		<module>msvc_build-service</module>

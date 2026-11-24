@@ -34,6 +34,11 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>com.BuildMyPC</groupId>
+			<artifactId>msvc_internal-security</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-h2console</artifactId>
 		</dependency>

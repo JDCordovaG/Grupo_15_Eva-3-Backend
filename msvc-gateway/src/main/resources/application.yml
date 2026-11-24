@@ -8,120 +8,230 @@ spring:
         webmvc:
           routes:
             - id: auth-service
-              uri: lb://msvc-auth-service
+              uri: "${AUTH_SERVICE_URL:lb://msvc-auth-service}"
               predicates:
                 - Path=/api/v1/auths/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: user-service
-              uri: lb://msvc-user-service
+              uri: "${USER_SERVICE_URL:lb://msvc-user-service}"
               predicates:
                 - Path=/api/v1/users/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: component-service
-              uri: lb://msvc-component-service
+              uri: "${COMPONENT_SERVICE_URL:lb://msvc-component-service}"
               predicates:
                 - Path=/api/v1/components/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: cpu-service
-              uri: lb://msvc-cpu-service
+              uri: "${CPU_SERVICE_URL:lb://msvc-cpu-service}"
               predicates:
                 - Path=/api/v1/cpus/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: gpu-service
-              uri: lb://msvc-gpu-service
+              uri: "${GPU_SERVICE_URL:lb://msvc-gpu-service}"
               predicates:
                 - Path=/api/v1/gpus/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: motherboard-service
-              uri: lb://msvc-motherboard-service
+              uri: "${MOTHERBOARD_SERVICE_URL:lb://msvc-motherboard-service}"
               predicates:
                 - Path=/api/v1/placas-madre/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: ram-service
-              uri: lb://msvc-ram-service
+              uri: "${RAM_SERVICE_URL:lb://msvc-ram-service}"
               predicates:
                 - Path=/api/v1/rams/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: power-supply-service
-              uri: lb://msvc-power-supply-service
+              uri: "${POWER_SUPPLY_SERVICE_URL:lb://msvc-power-supply-service}"
               predicates:
                 - Path=/api/v1/fuentes-poder/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: build-service
-              uri: lb://msvc-build-service
+              uri: "${BUILD_SERVICE_URL:lb://msvc-build-service}"
               predicates:
                 - Path=/api/v1/builds/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: compatibility-service
-              uri: lb://msvc-compatibility-service
+              uri: "${COMPATIBILITY_SERVICE_URL:lb://msvc-compatibility-service}"
               predicates:
                 - Path=/api/v1/compatibilities/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: benchmark-service
-              uri: lb://msvc-benchmark-service
+              uri: "${BENCHMARK_SERVICE_URL:lb://msvc-benchmark-service}"
               predicates:
                 - Path=/api/v1/benchmarks/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
             - id: quotation-service
-              uri: lb://msvc-quotation-service
+              uri: "${QUOTATION_SERVICE_URL:lb://msvc-quotation-service}"
               predicates:
                 - Path=/api/v1/quotations/**
+              filters:
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: auth-openapi
+              uri: "${AUTH_SERVICE_URL:lb://msvc-auth-service}"
+              predicates:
+                - Path=/docs/api/auth
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: user-openapi
+              uri: "${USER_SERVICE_URL:lb://msvc-user-service}"
+              predicates:
+                - Path=/docs/api/users
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: component-openapi
+              uri: "${COMPONENT_SERVICE_URL:lb://msvc-component-service}"
+              predicates:
+                - Path=/docs/api/components
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: cpu-openapi
+              uri: "${CPU_SERVICE_URL:lb://msvc-cpu-service}"
+              predicates:
+                - Path=/docs/api/cpus
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: gpu-openapi
+              uri: "${GPU_SERVICE_URL:lb://msvc-gpu-service}"
+              predicates:
+                - Path=/docs/api/gpus
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: motherboard-openapi
+              uri: "${MOTHERBOARD_SERVICE_URL:lb://msvc-motherboard-service}"
+              predicates:
+                - Path=/docs/api/motherboards
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: ram-openapi
+              uri: "${RAM_SERVICE_URL:lb://msvc-ram-service}"
+              predicates:
+                - Path=/docs/api/rams
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: power-supply-openapi
+              uri: "${POWER_SUPPLY_SERVICE_URL:lb://msvc-power-supply-service}"
+              predicates:
+                - Path=/docs/api/power-supplies
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: build-openapi
+              uri: "${BUILD_SERVICE_URL:lb://msvc-build-service}"
+              predicates:
+                - Path=/docs/api/builds
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: compatibility-openapi
+              uri: "${COMPATIBILITY_SERVICE_URL:lb://msvc-compatibility-service}"
+              predicates:
+                - Path=/docs/api/compatibilities
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: benchmark-openapi
+              uri: "${BENCHMARK_SERVICE_URL:lb://msvc-benchmark-service}"
+              predicates:
+                - Path=/docs/api/benchmarks
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
+
+            - id: quotation-openapi
+              uri: "${QUOTATION_SERVICE_URL:lb://msvc-quotation-service}"
+              predicates:
+                - Path=/docs/api/quotations
+              filters:
+                - SetPath=/v3/api-docs
+                - SetRequestHeader=X-Internal-Service-Token, ${app.internal-service.token}
 
 server:
   port: ${PORT:8080}
 
 eureka:
   client:
+    enabled: ${EUREKA_CLIENT_ENABLED:true}
     service-url:
       defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
 
 springdoc:
   api-docs:
     enabled: true
-
   swagger-ui:
     enabled: true
     path: /docs/swagger-ui.html
-
     urls:
       - name: Auth Service
-        url: http://localhost:8085/v3/api-docs
-
+        url: /docs/api/auth
       - name: User Service
-        url: http://localhost:8091/v3/api-docs
-
+        url: /docs/api/users
       - name: Component Service
-        url: http://localhost:8089/v3/api-docs
-
+        url: /docs/api/components
       - name: CPU Service
-        url: http://localhost:8081/v3/api-docs
-
+        url: /docs/api/cpus
       - name: GPU Service
-        url: http://localhost:8082/v3/api-docs
-
+        url: /docs/api/gpus
       - name: Motherboard Service
-        url: http://localhost:8083/v3/api-docs
-
+        url: /docs/api/motherboards
       - name: RAM Service
-        url: http://localhost:8090/v3/api-docs
-
+        url: /docs/api/rams
       - name: Power Supply Service
-        url: http://localhost:8084/v3/api-docs
-
+        url: /docs/api/power-supplies
       - name: Build Service
-        url: http://localhost:8087/v3/api-docs
-
+        url: /docs/api/builds
       - name: Compatibility Service
-        url: http://localhost:8088/v3/api-docs
-
+        url: /docs/api/compatibilities
       - name: Benchmark Service
-        url: http://localhost:8086/v3/api-docs
-
+        url: /docs/api/benchmarks
       - name: Quotation Service
-        url: http://localhost:8092/v3/api-docs
+        url: /docs/api/quotations
 
 app:
   cors:
     allowed-origins: ${CORS_ORIGENES:http://localhost:5173}
   jwt:
     secreto: ${JWT_SECRETO:clave-de-desarrollo-de-al-menos-32-bytes}
+  internal-service:
+    token: ${INTERNAL_SERVICE_TOKEN:local-development-only}

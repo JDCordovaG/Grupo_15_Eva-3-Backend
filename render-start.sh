@@ -27,15 +27,12 @@ for jar in \
   "$EUREKA_JAR" \
   "$GATEWAY_JAR" \
   "$APP_DIR/msvc_auth-service-0.0.1-SNAPSHOT.jar" \
-  "$APP_DIR/msvc_benchmark-service-0.0.1-SNAPSHOT.jar" \
   "$APP_DIR/msvc_build-service-0.0.1-SNAPSHOT.jar" \
-  "$APP_DIR/msvc_compatibility-service-0.0.1-SNAPSHOT.jar" \
   "$APP_DIR/msvc_component-service-0.0.1-SNAPSHOT.jar" \
   "$APP_DIR/msvc_cpu-service-0.0.1-SNAPSHOT.jar" \
   "$APP_DIR/msvc_gpu-service-0.0.1-SNAPSHOT.jar" \
   "$APP_DIR/msvc_motherboard-service-0.0.1-SNAPSHOT.jar" \
   "$APP_DIR/msvc_power-supply-service-0.0.1-SNAPSHOT.jar" \
-  "$APP_DIR/msvc_quotation-service-0.0.1-SNAPSHOT.jar" \
   "$APP_DIR/msvc_ram-service-0.0.1-SNAPSHOT.jar" \
   "$APP_DIR/msvc_user-service-0.0.1-SNAPSHOT.jar"; do
   if [ ! -f "$jar" ]; then
